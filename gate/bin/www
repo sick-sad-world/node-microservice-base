@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+// Module dependencies.
+// ==================================================================
+const app = require('../app');
+const http = require('http');
+const CONFIG = require('../config');
+const packageJSON = require('../package');
+
+// Create HTTP server.
+// ==================================================================
+const server = http.createServer(app);
+
+server.on('listening', (arg) => console.log(`App ${packageJSON.name} listening on ${CONFIG.port}`));
+server.on('error', error => {
+  if (error.syscall !== 'listen') throw error;
+
+  // handle specific listen errors with friendly messages
+  // ==================================================================
+  switch (error.code) {
+    case 'EACCES':
+      console.error('Port ${CONFIG.port} requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error('Port ${CONFIG.port} is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+});
+
+server.listen(CONFIG.port);
